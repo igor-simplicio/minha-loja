@@ -31,7 +31,7 @@ export default async function Home() {
       <div className="aviso">Free shipping on orders over €30</div>
 
       <header className="topo">
-        <a className="logo" href="/">Bazario</a>
+        <a className="logo" href="/">Buy</a>
         <form className="busca">
           <input placeholder="Search products, brands and categories" />
           <button type="button">Search</button>
@@ -88,7 +88,7 @@ export default async function Home() {
       </main>
 
       <footer className="rodape">
-        © 2026 Bazario. Study project, no real sales.
+        © 2026 Buy. Study project, no real sales.
       </footer>
     </>
   );
