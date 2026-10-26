@@ -168,6 +168,7 @@ body {
 }
 
 .banner {
+  position: relative;
   display: flex;
   flex-direction:column;
   align-items: flex-start;
@@ -176,7 +177,45 @@ body {
   padding: 40px;
   border-radius: 16px;
   color: #fff;
-  background: linear-gradient(110deg, var(--noite) 0%, #3a2a8c 55% var(--marca));
+  overflow: hidden;
+  background: linear-gradient(110deg, var(--marca-escura) 0%, var(--marca) 45%, var(--marca-escura) 100%);
+  background-size: 200% 200%;
+  animation: brilho-fundo 6s ease infinite, banner-entrada 0.6s ease-out;
+  box-shadow: 0 16px 32px rgba(224, 71, 16, 0.28);
+}
+
+.banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  animation: brilho-varredura 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.banner > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes brilho-fundo {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes brilho-varredura {
+  0% { left: -60%; }
+  60% { left: 130%; }
+  100% { left: 130%; }
+}
+
+@keyframes banner-entrada {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .banner small {
@@ -204,6 +243,19 @@ body {
   font-weight: 700;
   padding: 12px 24px;
   border-radius: 999px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.banner a:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner,
+  .banner::after {
+    animation: none;
+  }
 }
 
 .titulo-secao {
