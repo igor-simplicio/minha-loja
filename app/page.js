@@ -14,17 +14,27 @@ function stars(n) {
   return "★".repeat(full) + "☆".repeat(5 - full);
 }
 
-export default async function Home() {
+export default async function Home({ searchParams }) {
+  const params = await searchParams;
+  const categoryId = params?.category ? Number(params.category) : null;
+
   const [categories] = await db.query(
     "SELECT id, name FROM categories ORDER BY name"
   );
-  const [products] = await db.query(`
+
+  const activeCategory = categories.find((c) => c.id === categoryId);
+
+  const [products] = await db.query(
+    `
     SELECT p.id, p.name, p.price, p.old_price, p.rating, p.sold,
            p.free_shipping, p.image_url, c.name AS category
     FROM products p
     JOIN categories c ON c.id = p.category_id
+    ${activeCategory ? "WHERE p.category_id = ?" : ""}
     ORDER BY p.sold DESC
-  `);
+  `,
+    activeCategory ? [activeCategory.id] : []
+  );
 
   return (
     <>
@@ -43,9 +53,15 @@ export default async function Home() {
       </header>
 
       <nav className="categorias">
-        <a href="#" className="ativa">All</a>
+        <a href="/" className={!activeCategory ? "ativa" : undefined}>All</a>
         {categories.map((c) => (
-          <a href="#" key={c.id}>{c.name}</a>
+          <a
+            href={`/?category=${c.id}`}
+            key={c.id}
+            className={activeCategory?.id === c.id ? "ativa" : undefined}
+          >
+            {c.name}
+          </a>
         ))}
       </nav>
 
@@ -57,7 +73,9 @@ export default async function Home() {
           <a href="#deals">Shop deals</a>
         </section>
 
-        <h2 className="titulo-secao" id="deals">Best sellers</h2>
+        <h2 className="titulo-secao" id="deals">
+          {activeCategory ? activeCategory.name : "Best sellers"}
+        </h2>
         <div className="grade">
           {products.map((p) => (
             <article className="cartao" key={p.id}>
