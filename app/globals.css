@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Fredoka:wght@600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -76,17 +76,18 @@ body {
 }
 
 .logo{
-  font-family: "Roboto", sans-serif;
+  font-family: "Fredoka", sans-serif;
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 700;
   color: #fff;
 }
 
-.logo{
-  :after{
-    content: ".";
-    color: var(--marca);
-  }
+.logo::after{
+  content: "♥";
+  color: var(--marca);
+  margin-left: 2px;
+  font-size: 0.55em;
+  vertical-align: middle;
 }
 .busca {
   flex: 1 1 280px;
