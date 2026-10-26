@@ -135,7 +135,7 @@ body {
   margin-left: 6px;
 }
 
-.catogrias {
+.categorias {
   display:flex;
   gap: 8px;
   padding: 12px 32px;
@@ -150,13 +150,14 @@ body {
   border-radius: 999px;
   font-weight: 500;
   font-size: 14px;
+  transition: background 0.15s, color 0.15s;
 }
 
 .categorias a:hover {
   background: var(--fundo);
 }
 
-.categorias a.ativo {
+.categorias a.ativa {
   background: var(--marca);
   color: #fff;
 }
