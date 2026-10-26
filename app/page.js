@@ -17,6 +17,7 @@ function stars(n) {
 export default async function Home({ searchParams }) {
   const params = await searchParams;
   const categoryId = params?.category ? Number(params.category) : null;
+  const query = params?.q?.trim() || "";
 
   const [categories] = await db.query(
     "SELECT id, name FROM categories ORDER BY name"
@@ -24,16 +25,27 @@ export default async function Home({ searchParams }) {
 
   const activeCategory = categories.find((c) => c.id === categoryId);
 
+  const conditions = [];
+  const values = [];
+  if (activeCategory) {
+    conditions.push("p.category_id = ?");
+    values.push(activeCategory.id);
+  }
+  if (query) {
+    conditions.push("(p.name LIKE ? OR c.name LIKE ?)");
+    values.push(`%${query}%`, `%${query}%`);
+  }
+
   const [products] = await db.query(
     `
     SELECT p.id, p.name, p.price, p.old_price, p.rating, p.sold,
            p.free_shipping, p.image_url, c.name AS category
     FROM products p
     JOIN categories c ON c.id = p.category_id
-    ${activeCategory ? "WHERE p.category_id = ?" : ""}
+    ${conditions.length ? "WHERE " + conditions.join(" AND ") : ""}
     ORDER BY p.sold DESC
   `,
-    activeCategory ? [activeCategory.id] : []
+    values
   );
 
   return (
@@ -42,9 +54,17 @@ export default async function Home({ searchParams }) {
 
       <header className="topo">
         <a className="logo" href="/">Buy</a>
-        <form className="busca">
-          <input placeholder="Search products, brands and categories" />
-          <button type="button">Search</button>
+        <form className="busca" action="/" method="GET">
+          {activeCategory && (
+            <input type="hidden" name="category" value={activeCategory.id} />
+          )}
+          <input
+            type="text"
+            name="q"
+            defaultValue={query}
+            placeholder="Search products, brands and categories"
+          />
+          <button type="submit">Search</button>
         </form>
         <nav className="conta">
           <a href="#">Sign in</a>
@@ -74,8 +94,15 @@ export default async function Home({ searchParams }) {
         </section>
 
         <h2 className="titulo-secao" id="deals">
-          {activeCategory ? activeCategory.name : "Best sellers"}
+          {query
+            ? `Results for "${query}"`
+            : activeCategory
+            ? activeCategory.name
+            : "Best sellers"}
         </h2>
+        {products.length === 0 && (
+          <p className="sem-resultados">No products found.</p>
+        )}
         <div className="grade">
           {products.map((p) => (
             <article className="cartao" key={p.id}>
