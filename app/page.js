@@ -1,4 +1,6 @@
 import { db } from "../lib/db";
+import SiteHeader from "../components/SiteHeader";
+import { addToCartAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -48,42 +50,21 @@ export default async function Home({ searchParams }) {
     values
   );
 
+  const currentPath =
+    "/" +
+    (() => {
+      const qs = new URLSearchParams();
+      if (activeCategory) qs.set("category", activeCategory.id);
+      if (query) qs.set("q", query);
+      const s = qs.toString();
+      return s ? `?${s}` : "";
+    })();
+
   return (
     <>
       <div className="aviso">Free shipping on orders over €30</div>
 
-      <header className="topo">
-        <a className="logo" href="/">Buy</a>
-        <form className="busca" action="/" method="GET">
-          {activeCategory && (
-            <input type="hidden" name="category" value={activeCategory.id} />
-          )}
-          <input
-            type="text"
-            name="q"
-            defaultValue={query}
-            placeholder="Search products, brands and categories"
-          />
-          <button type="submit">Search</button>
-        </form>
-        <nav className="conta">
-          <a href="#">Sign in</a>
-          <a href="#" className="carrinho">Cart<span>0</span></a>
-        </nav>
-      </header>
-
-      <nav className="categorias">
-        <a href="/" className={!activeCategory ? "ativa" : undefined}>All</a>
-        {categories.map((c) => (
-          <a
-            href={`/?category=${c.id}`}
-            key={c.id}
-            className={activeCategory?.id === c.id ? "ativa" : undefined}
-          >
-            {c.name}
-          </a>
-        ))}
-      </nav>
+      <SiteHeader categories={categories} activeCategory={activeCategory} query={query} />
 
       <main className="conteudo">
         <section className="banner">
@@ -125,7 +106,11 @@ export default async function Home({ searchParams }) {
                   {p.old_price && <s>{euro(p.old_price)}</s>}
                 </p>
                 {p.free_shipping ? <small className="envio">Free shipping</small> : null}
-                <button className="comprar">Add to cart</button>
+                <form action={addToCartAction}>
+                  <input type="hidden" name="productId" value={p.id} />
+                  <input type="hidden" name="redirectTo" value={currentPath} />
+                  <button type="submit" className="comprar">Add to cart</button>
+                </form>
               </div>
             </article>
           ))}
