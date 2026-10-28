@@ -15,7 +15,7 @@ export default async function RegisterPage({ searchParams }) {
   return (
     <main className="auth">
       <form className="cartao-auth" action={registerAction}>
-        <a className="logo logo-escura" href="/">Buy</a>
+        <a className="logo logo-escura notranslate" translate="no" href="/">Buy</a>
         <h1>Create account</h1>
         {error && <p className="erro-auth">{error}</p>}
         <label>

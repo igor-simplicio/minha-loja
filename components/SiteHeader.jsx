@@ -9,7 +9,7 @@ export default async function SiteHeader({ categories = [], activeCategory, quer
   return (
     <>
       <header className="topo">
-        <a className="logo" href="/">Buy</a>
+        <a className="logo notranslate" translate="no" href="/">Buy</a>
         <form className="busca" action="/" method="GET">
           {activeCategory && (
             <input type="hidden" name="category" value={activeCategory.id} />
