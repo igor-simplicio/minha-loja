@@ -87,16 +87,16 @@ export default async function Home({ searchParams }) {
         <div className="grade">
           {products.map((p) => (
             <article className="cartao" key={p.id}>
-              <div className="foto">
+              <a href={`/product/${p.id}`} className="foto">
                 {p.image_url ? (
                   <img src={p.image_url} alt={p.name} />
                 ) : (
                   <span>{p.name.charAt(0)}</span>
                 )}
                 {discount(p) > 0 && <b className="selo">-{discount(p)}%</b>}
-              </div>
+              </a>
               <div className="info">
-                <h3>{p.name}</h3>
+                <h3><a href={`/product/${p.id}`}>{p.name}</a></h3>
                 <p className="estrelas">
                   <span>{stars(p.rating)}</span> {Number(p.rating).toFixed(1)}
                   {" · "}{p.sold.toLocaleString("en-US")} sold
