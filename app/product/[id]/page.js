@@ -65,13 +65,20 @@ export default async function ProductPage({ params }) {
               {product.old_price && <s>{euro(product.old_price)}</s>}
             </p>
             {product.free_shipping ? <small className="envio">Free shipping</small> : null}
+            {product.stock <= 0 && <small className="esgotado">Out of stock</small>}
 
             <p className="biografia">{product.description}</p>
 
             <form action={addToCartAction}>
               <input type="hidden" name="productId" value={product.id} />
               <input type="hidden" name="redirectTo" value={`/product/${product.id}`} />
-              <button type="submit" className="comprar comprar-grande">Add to cart</button>
+              <button
+                type="submit"
+                className="comprar comprar-grande"
+                disabled={product.stock <= 0}
+              >
+                {product.stock > 0 ? "Add to cart" : "Out of stock"}
+              </button>
             </form>
           </div>
         </div>

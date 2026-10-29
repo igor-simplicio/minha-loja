@@ -41,7 +41,7 @@ export default async function Home({ searchParams }) {
   const [products] = await db.query(
     `
     SELECT p.id, p.name, p.price, p.old_price, p.rating, p.sold,
-           p.free_shipping, p.image_url, c.name AS category
+           p.free_shipping, p.image_url, p.stock, c.name AS category
     FROM products p
     JOIN categories c ON c.id = p.category_id
     ${conditions.length ? "WHERE " + conditions.join(" AND ") : ""}
@@ -106,10 +106,13 @@ export default async function Home({ searchParams }) {
                   {p.old_price && <s>{euro(p.old_price)}</s>}
                 </p>
                 {p.free_shipping ? <small className="envio">Free shipping</small> : null}
+                {p.stock <= 0 && <small className="esgotado">Out of stock</small>}
                 <form action={addToCartAction}>
                   <input type="hidden" name="productId" value={p.id} />
                   <input type="hidden" name="redirectTo" value={currentPath} />
-                  <button type="submit" className="comprar">Add to cart</button>
+                  <button type="submit" className="comprar" disabled={p.stock <= 0}>
+                    {p.stock > 0 ? "Add to cart" : "Out of stock"}
+                  </button>
                 </form>
               </div>
             </article>

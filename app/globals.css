@@ -368,6 +368,12 @@ body {
   font-size: 12px;
 }
 
+.esgotado {
+  color: var(--suave);
+  font-weight: 700;
+  font-size: 12px;
+}
+
 .comprar {
   margin-top: auto;
   padding: 9px;
@@ -384,6 +390,18 @@ body {
 .comprar:hover {
   background: var(--marca);
   color: #fff;
+}
+
+.comprar:disabled {
+  cursor: not-allowed;
+  border-color: var(--suave);
+  color: var(--suave);
+  background: #fff;
+}
+
+.comprar:disabled:hover {
+  background: #fff;
+  color: var(--suave);
 }
 
 .rodape {
