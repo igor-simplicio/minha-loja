@@ -8,6 +8,11 @@ import { addToCart, removeFromCart, updateCartQuantity } from "../lib/cart";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function safeRedirectPath(path) {
+  if (typeof path === "string" && /^\/(?!\/)/.test(path)) return path;
+  return "/";
+}
+
 export async function registerAction(formData) {
   const name = formData.get("name")?.trim() || "";
   const email = formData.get("email")?.trim().toLowerCase() || "";
@@ -45,7 +50,7 @@ export async function registerAction(formData) {
 export async function loginAction(formData) {
   const email = formData.get("email")?.trim().toLowerCase() || "";
   const password = formData.get("password") || "";
-  const next = formData.get("next") || "/";
+  const next = safeRedirectPath(formData.get("next"));
   const nextParam = next !== "/" ? `&next=${encodeURIComponent(next)}` : "";
 
   if (!email || !password) {
@@ -75,7 +80,7 @@ export async function logoutAction() {
 export async function addToCartAction(formData) {
   const user = await getCurrentUser();
   const productId = Number(formData.get("productId"));
-  const redirectTo = formData.get("redirectTo") || "/";
+  const redirectTo = safeRedirectPath(formData.get("redirectTo"));
 
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(redirectTo)}`);
